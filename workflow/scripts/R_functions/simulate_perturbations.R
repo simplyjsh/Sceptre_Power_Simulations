@@ -8,15 +8,50 @@ library(SummarizedExperiment)
 #' Function to simulate enhancer perturbations for randomly picked cells and
 #' add as perturbation status matrix to the SCE object.
 #'
-#' @param sce A \code{SingleCellExperiment} object with a counts matrix
+#' @param sce A \code{SingleCellExperiment} S4 object with a counts matrix
 #'    initialized with zeros.
 #' @param cells_per_pert A numeric vector indicating the number of cells to
 #'    sample per perturbations. e.g. c(50, 100, 200, 400).
 #' @param guides_per_pert A numeric vector indicating the number of guides per
 #'    perturbation target. e.g. CREs, Enhs.
 #'
-#' @return sce A \code{SingleCellExperiment} object with a CRE perturbation
-#'    status matrix and a CRE per guide perturbation status matrix.
+#' @return sce A \code{SingleCellExperiment} S4 object with a CRE perturbation
+#'    status matrix and a CRE per guide perturbation status matrix stored as a
+#'    summarized alternative experiment `cre_perts` and `grna_perts`.
+#'
+#' @examples
+#' # Create a simulated response matrix
+#' example_features <- 100
+#' example_samples <- 10000
+#' example_response_matrix <- matrix(
+#'   data = rpois(example_features * example_samples, lambda = 0.05),
+#'   nrow = example_features,
+#'   ncol = example_samples
+#' )
+#'
+#' # Choose simulated perturbation status dimensions and input metrics
+#' num_cells <- 56000
+#' num_cells_per_pert <- c(50, 100, 200, 400)
+#' num_guides_per_pert <- 15
+#'
+#' # Create a blank matrix with specified number of cells and features.
+#' counts <- matrix(0, nrow = nrow(example_response_matrix), ncol = num_cells)
+#' colnames(counts) <- paste("cell", seq_len(num_cells), sep = "")
+#' rownames(counts) <- rownames(example_response_matrix)
+#'
+#' # Create a SingleCellExperiment object
+#' sce <- SingleCellExperiment(assays = list(counts = counts))
+#'
+#' # Simulate perturbations
+#' sce <- simulate_perturbations(
+#'   sce,
+#'   cells_per_pert = num_cells_per_pert,
+#'   guides_per_pert = num_guides_per_pert
+#' )
+#'
+#' # View the simulated perturbation status matrices
+#' assay(altExp(sce, "cre_perts"), "counts") |> View()
+#' assay(altExp(sce, "grna_perts"), "counts") |> View()
 simulate_perturbations <- function(sce, cells_per_pert, guides_per_pert) {
   # create randomly selected perturbations
   cells <- colnames(sce)
@@ -71,7 +106,7 @@ simulate_perturbations <- function(sce, cells_per_pert, guides_per_pert) {
 #' @examples
 #' simulate_one_pert(
 #'   cells = paste0("cell", 1:100),
-#'   guides - 3,
+#'   guides = 3,
 #'   cells_per_pert = 30
 #' )
 simulate_one_pert <- function(cells, guides, cells_per_pert) {
@@ -84,14 +119,17 @@ simulate_one_pert <- function(cells, guides, cells_per_pert) {
   # create CRE perturbations for these cells
   cre_perts <- matrix(
     rep(0, times = length(cells)),
-    nrow = 1, dimnames = list(NULL, cells)
+    nrow = 1,
+    dimnames = list(NULL, cells)
   )
   cre_perts[, pert_cells] <- 1
 
   # create gRNA perturbations for these cells
   grna_perts <- matrix(
     0,
-    nrow = guides, ncol = length(cells), dimnames = list(NULL, cells)
+    nrow = guides,
+    ncol = length(cells),
+    dimnames = list(NULL, cells)
   )
   pert_cells_per_grna <- split(
     pert_cells,
