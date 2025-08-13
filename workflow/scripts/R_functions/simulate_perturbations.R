@@ -50,8 +50,8 @@ library(SummarizedExperiment)
 #' )
 #'
 #' # View the simulated perturbation status matrices
-#' assay(altExp(sce, "cre_perts"), "counts") |> View()
-#' assay(altExp(sce, "grna_perts"), "counts") |> View()
+#' assay(altExp(sce, "cre_perts"), "perts") |> View()
+#' assay(altExp(sce, "grna_perts"), "perts") |> View()
 simulate_perturbations <- function(sce, cells_per_pert, guides_per_pert) {
   # create randomly selected perturbations
   cells <- colnames(sce)
