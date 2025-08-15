@@ -1,10 +1,10 @@
 # Main Config File Format for Sceptre-based Power Simulations Pipeline
-samples:
-  test_data
+samples: test_data
 
 simulate_guide_assignments:
-  num_cells_per_pert: [50, 75, 100, 150, 250, 500, 750, 1000, 1400, 1800, 2500, 4000, 7500, 10000] 
-  
+  num_cells_per_pert:
+    [50, 75, 100, 150, 250, 500, 750, 1000, 1400, 1800, 2500, 4000, 7500, 10000]
+
 sceptre_power_analysis:
   effect_size: 0.15
   reps: 20
@@ -12,7 +12,7 @@ sceptre_power_analysis:
 compute_power_from_simulations:
   pval_adj_thresh: 0.1
   positive_proportion: 0.05
-  
+
 visualize_power_results:
   tpm_per_gene: NULL
   gene_format: "ensembl"

@@ -166,7 +166,8 @@ simulate_sample_perturbation_response <- function(
   grna_perts <- as(grna_perts, "CsparseMatrix")
   grna_pert_status <- create_guide_pert_status(
     pert_status,
-    grna_perts = grna_perts, pert_guides = pert_guides
+    grna_perts = grna_perts,
+    pert_guides = pert_guides
   )
 
   # Create effect size matrix (sampled from negative binomial distribution
@@ -175,15 +176,18 @@ simulate_sample_perturbation_response <- function(
     rep(effect_size, nrow(pert_object)),
     names = rownames(pert_object)
   )
-  es_mat <- create_effect_size_matrix(grna_pert_status,
+  es_mat <- create_effect_size_matrix(
+    grna_pert_status,
     pert_guides = pert_guides,
-    gene_effect_sizes = effect_sizes, guide_sd = guide_sd
+    gene_effect_sizes = effect_sizes,
+    guide_sd = guide_sd
   )
 
   # Center effect sizes on specified gene-level effect sizes
   es_mat <- center_effect_size_matrix(
     es_mat,
-    pert_status = pert_status, gene_effect_sizes = effect_sizes
+    pert_status = pert_status,
+    gene_effect_sizes = effect_sizes
   )
   es_mat_use <- es_mat[, colnames(assay(pert_object, "counts"))]
 

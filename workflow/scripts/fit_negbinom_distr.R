@@ -3,7 +3,6 @@
 # Saving image for debugging
 save.image("RDA_objects/fit_dispersions.rda")
 message("Saved Image")
-# stop("Manually Stopped Program after Saving Image")
 
 # opening log file to collect all messages, warnings and errors
 message("Opening log file")
@@ -33,11 +32,12 @@ coldata <- data.frame(
 # fit negative binomial distributions to estimate gene-level dispersion
 message("Estimate dispersion using DESeq2:")
 sce <- fit_negbinom_deseq2(response_matrix,
-                           simulated_sce,
-                           coldata,
-                           size_factors = "poscounts",
-                           fit_type = "parametric",
-                           disp_type = "dispersion")
+  simulated_sce,
+  coldata,
+  size_factors = "poscounts",
+  fit_type = "parametric",
+  disp_type = "dispersion"
+)
 
 
 # save output sce to file
@@ -47,8 +47,3 @@ saveRDS(sce, file = snakemake@output$simulated_sce_disp)
 sink()
 sink(type = "message")
 close(log)
-
-
-
-
-

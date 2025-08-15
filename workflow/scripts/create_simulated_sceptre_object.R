@@ -1,11 +1,11 @@
-# Script to create a sceptre object based off some simulated counts for downstream power simulations
+# Script to create a sceptre object based off some simulated counts for
+# downstream power simulations
 
 ### CREATE DEBUG FILES =======================================================
 
 # Saving image for debugging
 save.image("RDA_objects/create_simulated_sceptre_object.rda")
 message("Saved Image")
-# stop("Manually Stopped Program after Saving Image")
 
 # Opening log file to collect all messages, warnings and errors
 message("Opening log file")
@@ -26,7 +26,10 @@ suppressPackageStartupMessages({
   library(sceptre)
   library(tidyverse)
   library(Matrix)
-  source(file.path(snakemake@scriptdir, "R_functions/differential_expression_fun.R"))
+  source(file.path(
+    snakemake@scriptdir,
+    "R_functions/differential_expression_fun.R"
+  ))
   source(file.path(snakemake@scriptdir, "R_functions/power_simulations_fun.R"))
   source(file.path(snakemake@scriptdir, "R_functions/simulate_perturbations.R"))
 })
@@ -41,7 +44,7 @@ raw_counts <- readRDS(snakemake@input$raw_counts)
 
 ### SIMULATE COUNTS ========================================================
 
-# Use an example pert and create the pert_object 
+# Use an example pert and create the pert_object
 result_matrix <- simulate_sample_perturbation_response(
   pert = unique(discovery_pairs$grna_target)[[1]],
   sce = simulated_sce_disp,
@@ -56,7 +59,7 @@ result_matrix <- simulate_sample_perturbation_response(
 # Initialize object
 sceptre_object <- import_data(
   response_matrix = result_matrix,
-  grna_matrix = assay(altExp(simulated_sce_disp, "grna_perts"), "perts"), 
+  grna_matrix = assay(altExp(simulated_sce_disp, "grna_perts"), "perts"),
   grna_target_data_frame = grna_target_data_frame,
   moi = "high"
 )
@@ -94,7 +97,7 @@ sceptre_object <- set_analysis_parameters(
   grna_integration_strategy = "union",
   control_group = "complement",
   formula_object = formula,
-  resampling_mechanism = "permutations", 
+  resampling_mechanism = "permutations",
   multiple_testing_method = "BH",
   multiple_testing_alpha = 0.05,
   resampling_approximation = "skew_normal"
